@@ -1,6 +1,7 @@
 val sparkVersion = settingKey[String]("Spark version")
 
 lazy val root = (project in file("."))
+  .configs(IntegrationTest)
   .settings(
     inThisBuild(
       List(
@@ -8,6 +9,7 @@ lazy val root = (project in file("."))
         scalaVersion := "2.12.18"
       )
     ),
+    Defaults.itSettings,
     name := "confluent-connector",
     version := "0.0.1",
     sparkVersion := "3.4.0",
@@ -20,9 +22,10 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "org.apache.spark" %% "spark-streaming" % sparkVersion.value % "provided",
       "org.apache.spark" %% "spark-sql" % sparkVersion.value % "provided",
-      "org.scalatest" %% "scalatest" % "3.2.2" % "test",
+      "org.scalatest" %% "scalatest" % "3.2.2" % "test,it",
       "org.scalacheck" %% "scalacheck" % "1.15.2" % "test",
-      "com.holdenkarau" %% "spark-testing-base" % s"${sparkVersion.value}_1.4.3" % "test"
+      "com.holdenkarau" %% "spark-testing-base" % s"${sparkVersion.value}_1.4.3" % "test,it",
+      "com.dimafeng" %% "testcontainers-scala" % "0.40.17" % "it"
     ),
 
     // uses compile classpath for the run task, including "provided" jar (cf http://stackoverflow.com/a/21803413/3827)
