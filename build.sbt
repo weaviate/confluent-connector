@@ -4,7 +4,7 @@ lazy val root = (project in file("."))
   .settings(
     inThisBuild(
       List(
-        organization := "com.example",
+        organization := "io.weaviate",
         scalaVersion := "2.12.18"
       )
     ),
