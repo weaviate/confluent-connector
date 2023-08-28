@@ -4,6 +4,9 @@ import  io.weaviate.spark.{WeaviateOptions => SparkWeaviateOptions}
 import org.apache.spark.sql.util.CaseInsensitiveStringMap
 
 class WeaviateOptions(config: CaseInsensitiveStringMap) extends SparkWeaviateOptions(config) {
+    val schemaRegistryUrl: String = config.get(WeaviateOptions.CONFLUENT_SCHEMA_REGISTRY_URL)
+    val schemaRegistryApiKey: String = config.get(WeaviateOptions.CONFLUENT_SCHEMA_REGISTRY_API_KEY)
+    val schemaRegistryApiSecret: String = config.get(WeaviateOptions.CONFLUENT_SCHEMA_REGISTRY_API_SECRET)
 
 }
 
