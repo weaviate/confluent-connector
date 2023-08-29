@@ -1,6 +1,4 @@
-package io.weaviate.confluent.util
-
-package io.weaviate.confluent.util
+package io.weaviate.confluent.utils
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

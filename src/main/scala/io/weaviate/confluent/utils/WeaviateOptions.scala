@@ -1,4 +1,4 @@
-package io.weaviate.confluent.util
+package io.weaviate.confluent.utils
 
 import io.weaviate.spark.{WeaviateOptions => SparkWeaviateOptions}
 import org.apache.spark.sql.util.CaseInsensitiveStringMap
