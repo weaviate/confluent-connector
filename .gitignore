@@ -156,3 +156,4 @@ docs/_build/
 .ammonite/
 metals.sbt
 .bsp
+*.worksheet.sc
