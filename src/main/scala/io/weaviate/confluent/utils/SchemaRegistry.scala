@@ -1,5 +1,6 @@
 package io.weaviate.confluent.utils
 import scala.io.Source
+import play.api.libs.json.{Json, JsDefined, JsString}
 
 object SchemaRegistry {
 
@@ -18,6 +19,12 @@ object SchemaRegistry {
           .encodeToString(s"$registryApiKey:$registryApiSecret".getBytes("UTF-8"))}"
     )
 
-    Source.fromInputStream(connection.getInputStream).mkString
+    val response = Source.fromInputStream(connection.getInputStream).mkString
+
+    Json.parse(response) \ "schema" match {
+      case JsDefined(JsString(text)) => text
+      case _ =>
+        throw new IllegalArgumentException("Invalid or missing 'schema' key.")
+    }
   }
 }
