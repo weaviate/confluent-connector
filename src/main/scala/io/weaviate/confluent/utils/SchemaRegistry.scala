@@ -7,13 +7,15 @@ import org.apache.spark.sql.avro.functions.from_avro
 
 object SchemaRegistry {
 
+  private val schemaIdColumn = "schema_id"
+
   private def extractSchemaId(df: DataFrame): DataFrame = {
     val binaryToString = fn.udf((x: Array[Byte]) => BigInt(x).toString)
     df.withColumn("key", fn.col("key").cast("string"))
-      .withColumn("_schema_id", fn.expr("substring(value, 2, 4)"))
+      .withColumn(schemaIdColumn, fn.expr("substring(value, 2, 4)"))
       .withColumn(
-        "_schema_id",
-        binaryToString(fn.col("_schema_id").cast(BinaryType))
+        schemaIdColumn,
+        binaryToString(fn.col(schemaIdColumn).cast(BinaryType))
       )
   }
 
@@ -31,7 +33,7 @@ object SchemaRegistry {
       schemaRegistryApiSecret: String
   ): DataFrame = {
     val distinctSchemaIds =
-      df.select("_schema_id").distinct().collect().map(_.getString(0))
+      df.select(schemaIdColumn).distinct().collect().map(_.getString(0))
     val deserializedDFs = distinctSchemaIds.map(id => {
       val schema = getSchemaById(
         id.toInt,
@@ -39,7 +41,7 @@ object SchemaRegistry {
         schemaRegistryApiSecret,
         schemaRegistryUrl
       )
-      df.filter(fn.col("_schema_id") === id)
+      df.filter(fn.col(schemaIdColumn) === id)
         .withColumn("value", from_avro(fn.col("value"), schema))
     })
     deserializedDFs.reduce(_ union _)
