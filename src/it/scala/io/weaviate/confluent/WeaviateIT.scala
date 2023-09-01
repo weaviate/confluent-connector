@@ -42,7 +42,8 @@ class ConfluentConnectorFlatSpec
     )
   var client: WeaviateClient = _
 
-  before {
+  override def beforeAll() {
+    super.beforeAll()
     val options = new CaseInsensitiveStringMap(
       Map("scheme" -> "http", "host" -> "localhost:8080").asJava
     )
