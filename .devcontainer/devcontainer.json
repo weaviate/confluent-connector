@@ -18,14 +18,16 @@
 				"GitHub.copilot-chat",
 				"eamodio.gitlens",
 				"scalameta.metals",
-				"scala-lang.scala"
+				"scala-lang.scala",
+				"ms-python.python",
+				"ms-toolsai.jupyter"
 			]
 		}
 	}
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "java -version",
+	"postCreateCommand": "make setup"
 	// Configure tool-specific properties.
 	// "customizations": {},
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
