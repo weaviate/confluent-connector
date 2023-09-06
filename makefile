@@ -1,3 +1,8 @@
+setup:
+	sudo apt update && \
+		sudo apt-get install -y gcc python3-dev && \
+		pip3 install -r ./notebooks/requirements.txt
+
 # Run unit tests
 test:
 	sbt test
@@ -12,4 +17,4 @@ jar:
 	
 # Build the thin jar
 thin-jar:
-    sbt clean compile package
+	sbt clean compile package
