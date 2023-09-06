@@ -18,7 +18,9 @@
 				"GitHub.copilot-chat",
 				"eamodio.gitlens",
 				"scalameta.metals",
-				"scala-lang.scala"
+				"scala-lang.scala",
+				"ms-python.python",
+				"ms-toolsai.jupyter"
 			]
 		}
 	}
