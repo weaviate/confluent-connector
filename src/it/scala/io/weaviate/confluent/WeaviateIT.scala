@@ -116,55 +116,24 @@ class ConfluentConnectorFlatSpec
 
   }
 
-  "Weaviate container" should "have 1 object" in {
+  "Weaviate container" should "have 5 objects" in {
 
     withContainers { composedContainers =>
-      
-      // create a schema to hold a book
-      val properties = Seq(
-        Property
-          .builder()
-          .dataType(List[String]("text").asJava)
-          .name("title")
-          .build(),
-        Property
-          .builder()
-          .dataType(List[String]("text").asJava)
-          .name("author")
-          .build(),
-        Property
-          .builder()
-          .dataType(List[String]("text").asJava)
-          .name("summary")
-          .build()
-      )
-      val schema = WeaviateClass.builder
-        .className("Book")
-        .properties(properties.asJava)
-        .build
-      client.schema().classCreator().withClass(schema).run
-
-      // create a dataframe containing one book
-      val book = Book(
-        "The Catcher in the Rye",
-        "J.D. Salinger",
-        "A novel about a teenage boy named Holden Caulfield who is expelled from his school."
-      )
-      val df = Seq(book).toDF()
-
-      // write the dataframe to Weaviate
-      df.write
+      val className = "Clickstream"
+      testDF.write
         .format("io.weaviate.confluent.Weaviate")
         .option("scheme", "http")
         .option("host", "localhost:8080")
-        .option("className", "Book")
+        .option("className", className)
         .mode("append")
         .save()
 
-      // check that the object was written to Weaviate
       val results =
-        client.data().objectsGetter().withClassName("Book").run().getResult()
-      assert(results.size() == 1)
+        client.data().objectsGetter().withClassName(className).run().getResult()
+      assert(results.size() == 5)
+
     }
+
   }
+  
 }
