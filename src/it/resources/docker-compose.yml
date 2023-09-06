@@ -21,4 +21,5 @@ services:
       ENABLE_MODULES: ''
       CLUSTER_HOSTNAME: 'node1'
       LOG_LEVEL: 'debug'
+      LOG_FORMAT: 'text'
 ...
