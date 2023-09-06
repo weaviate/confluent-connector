@@ -1,0 +1,6 @@
+black[jupyter]
+confluent-kafka[avro,json,protobuf]>=1.4.2
+ipykernel
+isort
+pyspark
+weaviate-client
