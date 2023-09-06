@@ -129,7 +129,13 @@ class ConfluentConnectorFlatSpec
         .save()
 
       val results =
-        client.data().objectsGetter().withClassName(className).run().getResult()
+        client
+          .data()
+          .objectsGetter()
+          .withClassName(className)
+          .run()
+          .getResult()
+
       assert(results.size() == 5)
 
     }
