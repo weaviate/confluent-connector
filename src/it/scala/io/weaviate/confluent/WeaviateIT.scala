@@ -34,6 +34,10 @@ class ConfluentConnectorFlatSpec
   val confluentApiKey = sys.env("CONFLUENT_API_KEY")
   val confluentSecret = sys.env("CONFLUENT_SECRET")
 
+  val confluentSchemaRegistryUrl = sys.env("CONFLUENT_SCHEMA_REGISTRY_URL")
+  val confluentSchemaRegistryApiKey = sys.env("CONFLUENT_REGISTRY_API_KEY")
+  val confluentSchemaRegistryApiSecret  = sys.env("CONFLUENT_REGISTRY_SECRET")
+
   val logger = Logger.getLogger(getClass.getName)
 
   override val containerDef =
@@ -125,6 +129,9 @@ class ConfluentConnectorFlatSpec
         .option("scheme", "http")
         .option("host", "localhost:8080")
         .option("className", className)
+        .option("schemaRegistryUrl", confluentSchemaRegistryUrl)
+        .option("schemaRegistryApiKey", confluentSchemaRegistryApiKey)
+        .option("schemaRegistryApiSecret", confluentSchemaRegistryApiSecret)
         .mode("append")
         .save()
 
@@ -141,5 +148,5 @@ class ConfluentConnectorFlatSpec
     }
 
   }
-  
+
 }

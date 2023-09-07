@@ -42,7 +42,7 @@ case class WeaviateDataWriter(
 
   def buildBatch(): Unit = {
 
-    val processedRows = KafkaUtils.processRows(recordBatch)
+    val processedRows = KafkaUtils.processRows(recordBatch, weaviateOptions)
 
     val weaviateObjects = processedRows.map { case (row, schema) =>
       val internalRow = InternalRow.fromSeq(row.toSeq)
