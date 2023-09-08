@@ -33,7 +33,7 @@
         "CONFLUENT_SECRET": "my-secret",
         "CONFLUENT_REGISTRY_API_KEY": "my-registry-api-key",
         "CONFLUENT_REGISTRY_SECRET": "my-registry-secret"
-    }
+    },
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
