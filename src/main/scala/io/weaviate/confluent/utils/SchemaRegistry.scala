@@ -9,62 +9,6 @@ object SchemaRegistry {
 
   private val schemaIdColumn = "schema_id"
 
-  private def extractSchemaId(df: DataFrame): DataFrame = {
-    val binaryToString = fn.udf((x: Array[Byte]) => BigInt(x).toString)
-    df.withColumn("key", fn.col("key").cast("string"))
-      .withColumn(schemaIdColumn, fn.expr("substring(value, 2, 4)"))
-      .withColumn(
-        schemaIdColumn,
-        binaryToString(fn.col(schemaIdColumn).cast(BinaryType))
-      )
-  }
-
-  private def skipFirstFiveBytes(
-      df: DataFrame,
-      column: String = "value"
-  ): DataFrame = {
-    df.withColumn(column, fn.expr(s"substring($column, 6, length($column)-5)"))
-  }
-
-  private def deserializeValue(
-      df: DataFrame,
-      schemaRegistryUrl: String,
-      schemaRegistryApiKey: String,
-      schemaRegistryApiSecret: String
-  ): DataFrame = {
-    val distinctSchemaIds =
-      df.select(schemaIdColumn).distinct().collect().map(_.getString(0))
-    val deserializedDFs = distinctSchemaIds.map(id => {
-      val schema = getSchemaById(
-        id.toInt,
-        schemaRegistryApiKey,
-        schemaRegistryApiSecret,
-        schemaRegistryUrl
-      )
-      df.filter(fn.col(schemaIdColumn) === id)
-        .withColumn("value", from_avro(fn.col("value"), schema))
-    })
-    deserializedDFs.reduce(_ union _)
-  }
-
-  def deserializeDataFrame(
-      df: DataFrame,
-      schemaRegistryUrl: String,
-      schemaRegistryApiKey: String,
-      schemaRegistryApiSecret: String
-  ): DataFrame = {
-
-    val schemaIdExtractedDF = extractSchemaId(df)
-    val skippedBytesDF = skipFirstFiveBytes(schemaIdExtractedDF, "value")
-    
-    deserializeValue(
-      skippedBytesDF,
-      schemaRegistryUrl,
-      schemaRegistryApiKey,
-      schemaRegistryApiSecret
-    )
-  }
-
   def getSchemaById(
       id: Int,
       registryApiKey: String,
