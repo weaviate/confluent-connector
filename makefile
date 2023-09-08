@@ -18,3 +18,6 @@ jar:
 # Build the thin jar
 thin-jar:
 	sbt clean compile package
+
+format:
+	sbt scalafmtAll scalafmtSbt
