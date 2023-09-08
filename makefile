@@ -9,7 +9,7 @@ test:
 
 # Run integration tests
 it:
-	sbt it:test
+	sbt IntegrationTest/test
 
 # Build the jar
 jar:
