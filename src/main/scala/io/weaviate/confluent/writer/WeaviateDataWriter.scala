@@ -41,7 +41,7 @@ case class WeaviateDataWriter(
   }
 
   def buildBatch(): Unit = {
-    
+
     val processedRows = KafkaUtils.processRows(recordBatch, weaviateOptions)
 
     val weaviateObjects = processedRows.map { case (row, schema) =>
@@ -148,7 +148,10 @@ case class WeaviateDataWriter(
       formatter.format(instant.atOffset(ZoneOffset.UTC))
     } catch {
       case e: IllegalArgumentException =>
-        throw new IllegalArgumentException(s"Unknown timestampString: $timestampString", e)
+        throw new IllegalArgumentException(
+          s"Unknown timestampString: $timestampString",
+          e
+        )
     }
   }
 
