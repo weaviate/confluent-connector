@@ -149,4 +149,56 @@ class ConfluentConnectorFlatSpec
 
   }
 
+  "Weaviate container" should "have some Clickstream objects" in {
+
+    withContainers { composedContainers =>
+
+      val className = "Clickstream"
+
+      // crate a schema in Weaviate
+      val url = "http://localhost:8080/v1/schema"
+      val json =
+        scala.io.Source.fromFile("src/it/resources/schema.json").mkString
+      val response = sendHttpPostRequest(url, json)
+
+      response match {
+        case (200, _) =>
+          logger.info("Schema created successfully")
+        case (code, message) =>
+          println(s"Error creating schema in Weaviate: $code $message")
+
+      }
+
+      // // function to run on each micro-batch
+      def f(batchDF: DataFrame, batchId: Long): Unit = {
+        batchDF.write
+          .format("io.weaviate.confluent.Weaviate")
+          .option("scheme", "http")
+          .option("host", "localhost:8080")
+          .option("className", className)
+          .option("schemaRegistryUrl", confluentSchemaRegistryUrl)
+          .option("schemaRegistryApiKey", confluentSchemaRegistryApiKey)
+          .option("schemaRegistryApiSecret", confluentSchemaRegistryApiSecret)
+          .mode("append")
+          .save()
+        }
+
+      // write the stream to Weaviate
+       val query = readStream.writeStream
+          // .option("checkpointLocation", checkpointPath)
+          .foreachBatch(f _)
+          .queryName(s"write-$confluentTopicName-to-weaviate")
+          .start()
+
+        // stop after 30 seconds
+        query.awaitTermination(30000)
+        query.stop()
+
+      // // check that the object was written to Weaviate
+      val results =
+        client.data().objectsGetter().withClassName(className).run().getResult()
+      assert(results.size() > 0)
+    }
+  }
+
 }
