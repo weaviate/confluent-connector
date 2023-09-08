@@ -120,7 +120,7 @@ class ConfluentConnectorFlatSpec
 
   }
 
-  "Weaviate container" should "have 5 objects" in {
+  "Weaviate container" should "have 5 objects after ingesting the test dataset" in {
 
     withContainers { composedContainers =>
       val className = "Clickstream"
@@ -149,7 +149,7 @@ class ConfluentConnectorFlatSpec
 
   }
 
-  "Weaviate container" should "have some Clickstream objects" in {
+  "Weaviate container" should "have some Clickstream objects after ingesting a stream from Confluent Cloud" in {
 
     withContainers { composedContainers =>
       val className = "Clickstream"
