@@ -168,7 +168,7 @@ class ConfluentConnectorFlatSpec
 
       }
 
-      // // function to run on each micro-batch
+      // function to run on each micro-batch
       def f(batchDF: DataFrame, batchId: Long): Unit = {
         batchDF.write
           .format("io.weaviate.confluent.Weaviate")
@@ -193,7 +193,7 @@ class ConfluentConnectorFlatSpec
       query.awaitTermination(30000)
       query.stop()
 
-      // // check that the object was written to Weaviate
+      // check that the object was written to Weaviate
       val results =
         client.data().objectsGetter().withClassName(className).run().getResult()
       assert(results.size() > 0)
