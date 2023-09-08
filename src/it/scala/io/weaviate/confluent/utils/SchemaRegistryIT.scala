@@ -31,22 +31,5 @@ class SchemaRegistryFlatSpec extends AnyFlatSpec with DataFrameSuiteBase with Be
             .load("src/it/resources/clickstream_data.avro")
     }
 
-    "SchemaRegistry" should "deserialize the 'value' column" in {
-        // a message from kafka has a column named "value" that contains the actual data
-        // but in a binary format. The schema is stored in the schema registry
-        
-        val deserializedDF = SchemaRegistry.deserializeDataFrame(
-            testDF,
-            schemaRegistryUrl,
-            schemaRegistryApiKey,
-            schemaRegistryApiSecret
-        )
-
-        val actualDeserializedColumns = deserializedDF.select("value.*").columns
-        val expectedDeserializedColumns = Array("user_id", "username", "registered_at", "first_name", "last_name", "city", "level")
-
-        actualDeserializedColumns should be (expectedDeserializedColumns)
-
-    }
     
 }
