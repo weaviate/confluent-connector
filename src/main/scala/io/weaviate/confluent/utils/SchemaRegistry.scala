@@ -1,7 +1,7 @@
 package io.weaviate.confluent.utils
 import scala.io.Source
-import play.api.libs.json.{Json, JsDefined, JsString}
-import org.apache.spark.sql.{DataFrame, functions => fn}
+import play.api.libs.json.{JsDefined, Json, JsString}
+import org.apache.spark.sql.{functions => fn, DataFrame}
 import org.apache.spark.sql.types.BinaryType
 import org.apache.spark.sql.avro.functions.from_avro
 

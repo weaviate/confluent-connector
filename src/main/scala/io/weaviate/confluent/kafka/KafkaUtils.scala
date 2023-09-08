@@ -63,7 +63,7 @@ object KafkaUtils {
     val schemaId = java.nio.ByteBuffer.wrap(value.slice(1, 5)).getInt()
     val data = value.slice(5, value.length)
     val offset = row.getLong(4)
-    val timestamp = new java.sql.Timestamp(row.getLong(5)/1000)
+    val timestamp = new java.sql.Timestamp(row.getLong(5) / 1000)
     val timestampType = row.getInt(6)
 
     KafkaMessage(

@@ -9,7 +9,7 @@ test:
 
 # Run integration tests
 it:
-	sbt it:test
+	sbt IntegrationTest/test
 
 # Build the jar
 jar:
@@ -18,3 +18,6 @@ jar:
 # Build the thin jar
 thin-jar:
 	sbt clean compile package
+
+format:
+	sbt scalafmtAll scalafmtSbt

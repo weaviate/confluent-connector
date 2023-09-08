@@ -8,7 +8,7 @@ import com.holdenkarau.spark.testing.SharedSparkContext
 import io.weaviate.client.v1.schema.model.Property
 import io.weaviate.client.v1.schema.model.WeaviateClass
 import io.weaviate.spark.WeaviateOptions
-import org.apache.spark.sql.{SparkSession, DataFrame}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.util.CaseInsensitiveStringMap
 import org.scalatest.flatspec._
 import org.testcontainers.containers.wait.strategy.Wait
@@ -36,7 +36,7 @@ class ConfluentConnectorFlatSpec
 
   val confluentSchemaRegistryUrl = sys.env("CONFLUENT_SCHEMA_REGISTRY_URL")
   val confluentSchemaRegistryApiKey = sys.env("CONFLUENT_REGISTRY_API_KEY")
-  val confluentSchemaRegistryApiSecret  = sys.env("CONFLUENT_REGISTRY_SECRET")
+  val confluentSchemaRegistryApiSecret = sys.env("CONFLUENT_REGISTRY_SECRET")
 
   val logger = Logger.getLogger(getClass.getName)
 
@@ -120,7 +120,7 @@ class ConfluentConnectorFlatSpec
 
   }
 
-  "Weaviate container" should "have 5 objects" in {
+  "Weaviate container" should "have 5 objects after ingesting the test dataset" in {
 
     withContainers { composedContainers =>
       val className = "Clickstream"
@@ -149,10 +149,9 @@ class ConfluentConnectorFlatSpec
 
   }
 
-  "Weaviate container" should "have some Clickstream objects" in {
+  "Weaviate container" should "have some Clickstream objects after ingesting a stream from Confluent Cloud" in {
 
     withContainers { composedContainers =>
-
       val className = "Clickstream"
 
       // crate a schema in Weaviate
@@ -169,7 +168,7 @@ class ConfluentConnectorFlatSpec
 
       }
 
-      // // function to run on each micro-batch
+      // function to run on each micro-batch
       def f(batchDF: DataFrame, batchId: Long): Unit = {
         batchDF.write
           .format("io.weaviate.confluent.Weaviate")
@@ -181,20 +180,20 @@ class ConfluentConnectorFlatSpec
           .option("schemaRegistryApiSecret", confluentSchemaRegistryApiSecret)
           .mode("append")
           .save()
-        }
+      }
 
       // write the stream to Weaviate
-       val query = readStream.writeStream
-          // .option("checkpointLocation", checkpointPath)
-          .foreachBatch(f _)
-          .queryName(s"write-$confluentTopicName-to-weaviate")
-          .start()
+      val query = readStream.writeStream
+        // .option("checkpointLocation", checkpointPath)
+        .foreachBatch(f _)
+        .queryName(s"write-$confluentTopicName-to-weaviate")
+        .start()
 
-        // stop after 30 seconds
-        query.awaitTermination(30000)
-        query.stop()
+      // stop after 30 seconds
+      query.awaitTermination(30000)
+      query.stop()
 
-      // // check that the object was written to Weaviate
+      // check that the object was written to Weaviate
       val results =
         client.data().objectsGetter().withClassName(className).run().getResult()
       assert(results.size() > 0)

@@ -1,6 +1,7 @@
 val sparkVersion = settingKey[String]("Spark version")
 
-assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
+assemblyOption in assembly := (assemblyOption in assembly).value
+  .copy(includeScala = false)
 assemblyJarName := s"${name.value}_${scalaBinaryVersion.value}-${sparkVersion.value}_${version.value}.jar"
 
 lazy val root = (project in file("."))
