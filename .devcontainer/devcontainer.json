@@ -23,7 +23,17 @@
 				"ms-toolsai.jupyter"
 			]
 		}
-	}
+	},
+	"containerEnv": {
+        "CONFLUENT_CLUSTER_NAME": "my-cluster",
+        "CONFLUENT_BOOTSTRAP_SERVERS": "my-bootstrap-server:9092",
+        "CONFLUENT_TOPIC_NAME": "my-topic",
+        "CONFLUENT_SCHEMA_REGISTRY_URL": "https://my-schema-registry-url",
+        "CONFLUENT_API_KEY": "my-api-key",
+        "CONFLUENT_SECRET": "my-secret",
+        "CONFLUENT_REGISTRY_API_KEY": "my-registry-api-key",
+        "CONFLUENT_REGISTRY_SECRET": "my-registry-secret"
+    }
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.

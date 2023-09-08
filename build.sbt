@@ -25,7 +25,10 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "org.apache.spark" %% "spark-streaming" % sparkVersion.value % "provided",
       "org.apache.spark" %% "spark-sql" % sparkVersion.value % "provided",
+      "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion.value % "provided",
+      "org.apache.spark" %% "spark-avro" % sparkVersion.value % "provided",
       "io.weaviate" %% "spark-connector" % "1.2.8",
+      "com.typesafe.play" %% "play-json" % "2.10.0-RC8",
       "org.scalatest" %% "scalatest" % "3.2.2" % "test,it",
       "org.scalacheck" %% "scalacheck" % "1.15.2" % "test",
       "com.holdenkarau" %% "spark-testing-base" % s"${sparkVersion.value}_1.4.3" % "test,it",

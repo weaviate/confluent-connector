@@ -1,0 +1,104 @@
+{
+    "class": "Clickstream",
+    "description": "A record of user clicks on a website",
+    "properties": [
+        {
+            "name": "_kafka_key",
+            "dataType": [
+                "string"
+            ],
+            "description": "The key of the Kafka message"
+        },
+        {
+            "name": "_kafka_topic",
+            "dataType": [
+                "string"
+            ],
+            "description": "The topic of the Kafka message"
+        },
+        {
+            "name": "_kafka_partition",
+            "dataType": [
+                "int"
+            ],
+            "description": "The partition of the Kafka message"
+        },
+        {
+            "name": "_kafka_offset",
+            "dataType": [
+                "int"
+            ],
+            "description": "The offset of the Kafka message"
+        },
+        {
+            "name": "_kafka_timestamp",
+            "dataType": [
+                "date"
+            ],
+            "description": "The timestamp of the Kafka message"
+        },
+        {
+            "name": "_kafka_timestampType",
+            "dataType": [
+                "int"
+            ],
+            "description": "The timestamp type of the Kafka message"
+        },
+        {
+            "name": "_kafka_schema_id",
+            "dataType": [
+                "string"
+            ],
+            "description": "The schema ID of the Kafka message value"
+        },
+        {
+            "name": "user_id",
+            "dataType": [
+                "int"
+            ],
+            "description": "The ID of the user who clicked"
+        },
+        {
+            "name": "username",
+            "dataType": [
+                "string"
+            ],
+            "description": "The username of the user who clicked"
+        },
+        {
+            "name": "registered_at",
+            "dataType": [
+                "int"
+            ],
+            "description": "The timestamp when the user registered"
+        },
+        {
+            "name": "first_name",
+            "dataType": [
+                "string"
+            ],
+            "description": "The first name of the user who clicked"
+        },
+        {
+            "name": "last_name",
+            "dataType": [
+                "string"
+            ],
+            "description": "The last name of the user who clicked"
+        },
+        {
+            "name": "city",
+            "dataType": [
+                "string"
+            ],
+            "description": "The city where the user who clicked is located"
+        },
+        {
+            "name": "level",
+            "dataType": [
+                "string"
+            ],
+            "description": "The level of the user who clicked"
+        }
+    ]
+}
