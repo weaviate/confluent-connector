@@ -5,11 +5,11 @@ setup:
 
 # Run unit tests
 test:
-	sbt test
+	sbt coverage test
 
 # Run integration tests
 it:
-	sbt IntegrationTest/test
+	sbt coverage IntegrationTest/test
 
 # Build the jar
 jar:
@@ -21,3 +21,9 @@ thin-jar:
 
 format:
 	sbt scalafmtAll scalafmtSbt
+
+clean:
+	sbt clean
+
+cov: clean test it
+	sbt coverageReport
