@@ -2,6 +2,9 @@ setup:
 	sudo apt update && \
 		sudo apt-get install -y gcc python3-dev && \
 		pip3 install -r ./notebooks/requirements.txt
+	
+	curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh && \
+		databricks configure
 
 # Run unit tests
 test:
