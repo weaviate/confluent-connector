@@ -32,7 +32,9 @@
         "CONFLUENT_API_KEY": "my-api-key",
         "CONFLUENT_SECRET": "my-secret",
         "CONFLUENT_REGISTRY_API_KEY": "my-registry-api-key",
-        "CONFLUENT_REGISTRY_SECRET": "my-registry-secret"
+        "CONFLUENT_REGISTRY_SECRET": "my-registry-secret",
+		"WCS_URL": "https://my-wcs-url",
+		"WCS_API_KEY": "my-wcs-api-key"
     },
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
