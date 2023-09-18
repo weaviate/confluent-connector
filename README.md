@@ -4,6 +4,10 @@
 
 `confluent-connector` is an integration between Confluent Cloud and Weaviate that simplifies the process of ingesting streaming data into Weaviate. This project aims to make it easy for users to work with real-time data flows.
 
+## Architecture
+
+The integration is implemented as a custom Spark write data source.
+
 ## Getting Started
 
 ### Prerequisites
