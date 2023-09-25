@@ -17,17 +17,19 @@ object SchemaRegistry {
 
   def getSchemaById(
       id: Int,
-      registryApiKey: String,
-      registryApiSecret: String,
-      schemaRegistryUrl: String
+      config: SchemaRegistryConfig
   ): String = {
+    val schemaRegistryUrl = config.url
+    val schemaRegistryApiKey = config.apiKey
+    val schemaRegistryApiSecret = config.apiSecret
+
     val url = new java.net.URL(s"$schemaRegistryUrl/schemas/ids/$id")
     val connection = url.openConnection.asInstanceOf[java.net.HttpURLConnection]
     connection.setRequestMethod("GET")
     connection.setRequestProperty(
       "Authorization",
       s"Basic ${java.util.Base64.getEncoder
-          .encodeToString(s"$registryApiKey:$registryApiSecret".getBytes("UTF-8"))}"
+          .encodeToString(s"$schemaRegistryApiKey:$schemaRegistryApiSecret".getBytes("UTF-8"))}"
     )
 
     val response = Source.fromInputStream(connection.getInputStream).mkString
