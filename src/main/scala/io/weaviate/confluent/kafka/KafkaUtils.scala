@@ -9,7 +9,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.Row
 import java.sql.Timestamp
 import org.apache.spark.sql.catalyst.expressions.GenericInternalRow
-import io.weaviate.confluent.utils.SchemaRegistry
+import io.weaviate.confluent.utils.{SchemaRegistry, SchemaRegistryConfig}
 import io.weaviate.confluent.utils.WeaviateOptions
 
 object KafkaUtils {
@@ -95,6 +95,12 @@ object KafkaUtils {
       rows: Array[InternalRow],
       weaviateOptions: WeaviateOptions
   ): Seq[(Row, StructType)] = {
+    val schemaRegistryConfig = SchemaRegistryConfig(
+      weaviateOptions.schemaRegistryApiKey,
+      weaviateOptions.schemaRegistryApiSecret,
+      weaviateOptions.schemaRegistryUrl
+    )
+
     val kafkaMessages = rows.map(parseKafkaMessage)
     val schemaIds = kafkaMessages.map(_.schemaId.toString).distinct
 
@@ -102,9 +108,7 @@ object KafkaUtils {
       val schemaString = Some(
         SchemaRegistry.getSchemaById(
           schemaId.toInt,
-          weaviateOptions.schemaRegistryApiKey,
-          weaviateOptions.schemaRegistryApiSecret,
-          weaviateOptions.schemaRegistryUrl
+          schemaRegistryConfig
         )
       )
 
