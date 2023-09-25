@@ -13,8 +13,6 @@ case class SchemaRegistryConfig(
 
 object SchemaRegistry {
 
-  private val schemaIdColumn = "schema_id"
-
   def getSchemaById(
       id: Int,
       config: SchemaRegistryConfig
