@@ -5,6 +5,12 @@ import org.apache.spark.sql.{functions => fn, DataFrame}
 import org.apache.spark.sql.types.BinaryType
 import org.apache.spark.sql.avro.functions.from_avro
 
+case class SchemaRegistryConfig(
+    apiKey: String,
+    apiSecret: String,
+    url: String
+)
+
 object SchemaRegistry {
 
   private val schemaIdColumn = "schema_id"
