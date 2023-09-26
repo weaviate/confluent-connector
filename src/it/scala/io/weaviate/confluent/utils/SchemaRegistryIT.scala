@@ -62,4 +62,14 @@ class SchemaRegistryFlatSpec
 
   }
 
+  "schema id 100004" should "be associated with the subject 'confluent-connector-integrationt-test' only" in {
+    val schemaId = 100004
+    val subjects =
+      SchemaRegistry.getSubjectsAssociatedToSchemaId(schemaId, config)
+
+    subjects should have size 1
+    subjects should contain("confluent-connector-integrationt-test")
+
+  }
+
 }
