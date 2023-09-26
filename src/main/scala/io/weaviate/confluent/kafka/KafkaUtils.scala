@@ -38,7 +38,7 @@ object KafkaUtils {
       StructField(name, dataType)
     }
 
-    val structType = StructType(fields)
+    val structType = StructType(fields.toArray)
     val values = fields.map(field => record.get(field.name)).toArray
     val row = Row.fromSeq(values)
 

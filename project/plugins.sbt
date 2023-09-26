@@ -10,4 +10,8 @@ addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.15.0")
 
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
 
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.15")
+
+addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
+
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
