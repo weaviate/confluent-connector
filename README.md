@@ -16,7 +16,7 @@ The integration is implemented as a custom Spark write data source.
 - Docker and Docker Compose installed
 - Make utility
 - Scala 2.12
-- Spark 3.4.0
+- Spark 3.5.0
 
 ### Installation Steps
 
