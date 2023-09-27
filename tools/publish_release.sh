@@ -24,4 +24,4 @@ sbt +sonatypePrepare
 sbt sonatypeBundleUpload
 
 # upload artifact to sonatype and release
-#sbt sonatypeBundleRelease
+sbt sonatypeBundleRelease
