@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  scala-integration-tests:
+  tests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -20,34 +20,14 @@ jobs:
         with:
           distribution: ${{ matrix.distribution }}
           java-version: ${{ matrix.java }}
-      - run: rm .sbtopts
-        if: ${{ matrix.java }} == "8"
-      - name: Build, Unit Test and Scala Spark Integration tests
-        run: sbt -v +test
-
-  pyspark-integration-tests:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 11
       - name: Get release version
         run: |
-          version=$(cat version.sbt | cut -d '"' -f2)
-          echo "version=$version" >> $GITHUB_ENV
+           version=$(cat version.sbt | cut -d '"' -f2)
+           echo "version=$version" >> $GITHUB_ENV
       - name: Create jar with all dependencies included
         run: |
-          sbt +assembly
-          test -f ./target/scala-2.12/spark-connector-assembly-${{ env.version }}.jar
-          test -f ./target/scala-2.13/spark-connector-assembly-${{ env.version }}.jar
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          cache: 'pip'
-      - name: Install Python dependencies
-        run: pip install -r src/test/python/requirements.txt
-      - name: Run pyspark integration tests
-        run: pytest
+           sbt +assembly
+           test -f ./target/scala-2.12/confluent-connector_2.12-${{ env.version }}.jar
+           test -f ./target/scala-2.13/confluent-connector_2.13-${{ env.version }}.jar
+      - name: Run Tests
+        run: sbt -v +test
