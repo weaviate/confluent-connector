@@ -18,6 +18,20 @@ case class SchemaRegistryConfig(
 object SchemaRegistry {
   private val logger = LoggerFactory.getLogger(getClass)
 
+  /** Wraps the Confluent Schema Registry API's endpoint to get a schema string
+    * by ID.
+    *
+    * @param id
+    *   The ID of the schema to retrieve.
+    * @param config
+    *   The configuration for the Schema Registry.
+    * @return
+    *   The schema string.
+    * @throws IllegalArgumentException
+    *   If the 'schema' key is invalid or missing in the response.
+    * @see
+    *   [[https://docs.confluent.io/cloud/current/sr/sr-rest-apis.html#get-schema-string-by-id Get schema string by ID]]
+    */
   def getSchemaById(
       id: Int,
       config: SchemaRegistryConfig
@@ -44,6 +58,18 @@ object SchemaRegistry {
     }
   }
 
+  /** Wraps the Confluent Schema Registry API's endpoint to get a list of
+    * subjects associated to a schema id
+    *
+    * @param id
+    *   The ID of the schema to retrieve.
+    * @param config
+    *   The configuration for the Schema Registry.
+    * @return
+    *   A list of subjects associated to the schema id
+    * @see
+    *   [[https://docs.confluent.io/cloud/current/sr/sr-rest-apis.html#get-subjects-associated-with-the-schema List subjects associated to a schema ID]]
+    */
   def getSubjectsAssociatedToSchemaId(
       id: Int,
       config: SchemaRegistryConfig
@@ -78,9 +104,7 @@ object SchemaRegistry {
     * @return
     *   A JSON object representing the search results.
     * @see
-    *   <a
-    *   href="https://docs.confluent.io/cloud/current/stream-governance/stream-catalog-rest-apis.html#search-schema-record-by-name">Confluent
-    *   Schema Registry API documentation</a>
+    *   [[https://docs.confluent.io/cloud/current/stream-governance/stream-catalog-rest-apis.html#search-schema-record-by-name Search schema record by name]]
     */
   def searchSchemaRecordByName(
       query: String,
