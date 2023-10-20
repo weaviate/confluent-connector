@@ -10,6 +10,8 @@ import java.net.http.HttpRequest
 import java.net.URI
 import java.net.http.HttpResponse
 import play.api.libs.json.JsValue
+import play.api.libs.json.JsArray
+import org.slf4j.LoggerFactory
 
 case class SchemaRegistryConfig(
     apiKey: String,
@@ -18,6 +20,7 @@ case class SchemaRegistryConfig(
 )
 
 object SchemaRegistry {
+  private val logger = LoggerFactory.getLogger(getClass)
 
   def getSchemaById(
       id: Int,
@@ -106,6 +109,32 @@ object SchemaRegistry {
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
     Json.parse(response.body)
+  }
+
+  /**
+   * Searches for a schema record by name and returns the fully qualified name of the latest schema.
+   *
+   * @param schemaName The name of the schema to search for.
+   * @param config The schema registry configuration to use for the search.
+   * @return The fully qualified name of the latest schema matching the given name.
+   */
+  def getSchemaFullyQualifiedName(
+      schemaName: String,
+      config: SchemaRegistryConfig
+  ): String = {
+    val result = SchemaRegistry.searchSchemaRecordByName(schemaName, config)
+    val schemaFQNs = result("entities")
+      .as[JsArray]
+      .value
+      .map(entity => entity("attributes")("qualifiedName").as[String])
+
+    if (schemaFQNs.length > 1) {
+      logger.warn(
+        s"Found ${schemaFQNs.length} schema FQNs for schema $schemaName. Schema evolution is not supported yet. Using the latest schema."
+      )
+    }
+
+    schemaFQNs.last
   }
 
   private def buildAuthToken(config: SchemaRegistryConfig): String = {

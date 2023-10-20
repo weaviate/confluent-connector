@@ -14,6 +14,8 @@ class SchemaRegistryFlatSpec
   val schemaRegistryUrl = sys.env("CONFLUENT_SCHEMA_REGISTRY_URL")
   val schemaRegistryApiKey = sys.env("CONFLUENT_REGISTRY_API_KEY")
   val schemaRegistryApiSecret = sys.env("CONFLUENT_REGISTRY_SECRET")
+  val schemaName = "integrationTestRecord"
+
   val config = SchemaRegistryConfig(
     schemaRegistryApiKey,
     schemaRegistryApiSecret,
@@ -70,6 +72,12 @@ class SchemaRegistryFlatSpec
     subjects should have size 1
     subjects should contain("confluent-connector-integrationt-test")
 
+  }
+
+  "getSchemaFullyQualifiedName" should "return the fully qualified name of the latest schema" in {
+    val result = SchemaRegistry.getSchemaFullyQualifiedName(schemaName, config)
+
+    result shouldEqual "lsrc-j81now:.:100004:io.weaviate.integrationTestRecord"
   }
 
 }
