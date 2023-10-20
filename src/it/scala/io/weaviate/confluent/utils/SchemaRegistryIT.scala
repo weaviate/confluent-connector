@@ -54,7 +54,7 @@ class SchemaRegistryFlatSpec
 
   }
 
-  "getSchemaById" should "throw a file not found exception if the schema id is invalid" in {
+  it should "throw a file not found exception if the schema id is invalid" in {
     val schemaId = 999999
     val exception = intercept[java.io.FileNotFoundException] {
       SchemaRegistry.getSchemaById(schemaId, config)
