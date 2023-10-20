@@ -9,6 +9,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.URI
 import java.net.http.HttpResponse
+import play.api.libs.json.JsValue
 
 case class SchemaRegistryConfig(
     apiKey: String,
@@ -66,6 +67,45 @@ object SchemaRegistry {
 
     Json.parse(response.body).as[List[String]]
 
+  }
+
+  /** Wraps the Confluent Schema Registry API endpoint for searching schema
+    * records by name.
+    *
+    * @param query
+    *   The query string to search for.
+    * @param config
+    *   The configuration object for the Schema Registry.
+    * @return
+    *   A JSON object representing the search results.
+    * @see
+    *   <a
+    *   href="https://docs.confluent.io/cloud/current/stream-governance/stream-catalog-rest-apis.html#search-schema-record-by-name">Confluent
+    *   Schema Registry API documentation</a>
+    */
+  def searchSchemaRecordByName(
+      query: String,
+      config: SchemaRegistryConfig
+  ): JsValue = {
+    val schemaRegistryUrl = config.url
+    val authToken = buildAuthToken(config)
+
+    val client = HttpClient.newHttpClient()
+
+    val request = HttpRequest
+      .newBuilder()
+      .uri(
+        URI.create(
+          s"$schemaRegistryUrl/catalog/v1/search/basic?type=sr_record&query=$query"
+        )
+      )
+      .header("Authorization", s"Basic $authToken")
+      .GET()
+      .build()
+
+    val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+    Json.parse(response.body)
   }
 
   private def buildAuthToken(config: SchemaRegistryConfig): String = {
