@@ -15,6 +15,7 @@ class SchemaRegistryFlatSpec
   val schemaRegistryApiKey = sys.env("CONFLUENT_REGISTRY_API_KEY")
   val schemaRegistryApiSecret = sys.env("CONFLUENT_REGISTRY_SECRET")
   val schemaName = "integrationTestRecord"
+  val schemaFQN = "lsrc-j81now:.:100004:io.weaviate.integrationTestRecord"
 
   val config = SchemaRegistryConfig(
     schemaRegistryApiKey,
@@ -78,6 +79,23 @@ class SchemaRegistryFlatSpec
     val result = SchemaRegistry.getSchemaFullyQualifiedName(schemaName, config)
 
     result shouldEqual "lsrc-j81now:.:100004:io.weaviate.integrationTestRecord"
+  }
+
+  "getSchemaTopLevelTags" should "return the top-level tags for a schema" in {
+
+    val result = SchemaRegistry.getSchemaTopLevelTags(schemaFQN, config)
+
+    result should have size 1
+    result should contain("vectorizer_txt2vec_cohere")
+
+  }
+
+  it should "throw an exception if no schema record is found with the given name" in {
+    val nonExistingSchemaFQN = schemaFQN + "non-existing"
+
+    assertThrows[NoSuchElementException] {
+      SchemaRegistry.getSchemaTopLevelTags(nonExistingSchemaFQN, config)
+    }
   }
 
 }

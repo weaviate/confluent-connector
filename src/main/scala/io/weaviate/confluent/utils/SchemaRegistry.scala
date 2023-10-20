@@ -160,6 +160,34 @@ object SchemaRegistry {
     schemaFQNs.last
   }
 
+  /** Retrieves the top-level tags for a schema from the Confluent Schema
+    * Registry.
+    *
+    * A top-level tag is a tag that is linked to a schema's name, instead of its
+    * field(s).
+    *
+    * @param schemaFQN
+    *   The fully-qualified name of the schema to retrieve.
+    * @param config
+    *   The configuration for the Schema Registry.
+    * @return
+    *   A list of top-level tags for the schema.
+    * @throws NoSuchElementException
+    *   If no schema record is found with the given name.
+    */
+  def getSchemaTopLevelTags(
+      schemaFQN: String,
+      config: SchemaRegistryConfig
+  ): List[String] = {
+    val schemaName = schemaFQN.split("\\.").last
+    val result = SchemaRegistry.searchSchemaRecordByName(schemaName, config)
+    val entities = result("entities").as[JsArray].value
+    val matchingSchema = entities
+      .filter(e => e("attributes")("qualifiedName").as[String] == schemaFQN)
+      .head
+    matchingSchema("classificationNames").as[JsArray].as[List[String]]
+  }
+
   private def buildAuthToken(config: SchemaRegistryConfig): String = {
     val apiKey = config.apiKey
     val apiSecret = config.apiSecret
