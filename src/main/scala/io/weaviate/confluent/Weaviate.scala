@@ -34,6 +34,8 @@ class Weaviate extends SparkWeaviate {
   }
 
   override def inferSchema(options: CaseInsensitiveStringMap): StructType = {
+    // TODO: create a schema in weaviate based on the schema name the user provided and
+    //        its associated tags in the Confluent Schema Registry
     // this is the schema of ANY kafka message
     StructType(
       Seq(
