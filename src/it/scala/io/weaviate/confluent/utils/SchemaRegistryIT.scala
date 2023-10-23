@@ -23,26 +23,9 @@ class SchemaRegistryFlatSpec
     schemaRegistryUrl
   )
 
-  var testDF: org.apache.spark.sql.DataFrame = _
-
   override def beforeAll() {
     super.beforeAll()
 
-    val jarPackages = List(
-      "org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.0",
-      "org.apache.spark:spark-avro_2.12:3.4.0"
-    )
-
-    val spark = SparkSession
-      .builder()
-      .appName("scalaWorksheet")
-      .master("local[*]")
-      .config("spark.jars.packages", jarPackages.mkString(","))
-      .getOrCreate()
-
-    testDF = spark.read
-      .format("avro")
-      .load("src/it/resources/clickstream_data.avro")
   }
 
   "getSchemaById" should "return a schema string if the schema id is valid" in {
