@@ -108,4 +108,19 @@ class SchemaRegistryFlatSpec
     )
   }
 
+  "getSchemaFieldTags" should "return an empty list when the field has no tags" in {
+    val fieldName = "field1"
+
+    val tags = SchemaRegistry.getSchemaFieldTags(schemaFQN, fieldName, config)
+
+    tags shouldBe empty
+  }
+
+  it should "return the tags associated with a field as a list of strings" in {
+    val fieldName = "field3"
+
+    val tags = SchemaRegistry.getSchemaFieldTags(schemaFQN, fieldName, config)
+
+    tags shouldEqual List("skip")
+  }
 }

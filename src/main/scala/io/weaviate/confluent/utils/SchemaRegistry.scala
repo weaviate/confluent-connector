@@ -264,6 +264,58 @@ object SchemaRegistry {
     fields
   }
 
+  /** Retrieves the tags associated with a given field in a given schema from
+    * the Schema Registry.
+    *
+    * @param schemaFQN
+    *   The fully-qualified name of the schema.
+    * @param fieldName
+    *   The name of the field to retrieve tags for.
+    * @param config
+    *   The configuration object for the Schema Registry.
+    * @return
+    *   A list of tags associated with the given field. If the field has no
+    *   tags, an empty list is returned.
+    * @throws RuntimeException
+    *   If the response from the Schema Registry API is unexpected.
+    */
+  def getSchemaFieldTags(
+      schemaFQN: String,
+      fieldName: String,
+      config: SchemaRegistryConfig
+  ): List[String] = {
+    val schemaRegistryUrl = config.url
+    val authToken = buildAuthToken(config)
+
+    val client = HttpClient.newHttpClient()
+
+    val request = HttpRequest
+      .newBuilder()
+      .uri(
+        URI.create(
+          s"$schemaRegistryUrl/catalog/v1/entity/type/sr_field/name/$schemaFQN.$fieldName/tags"
+        )
+      )
+      .header("Authorization", s"Basic $authToken")
+      .GET()
+      .build()
+
+    val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+    val result = Json.parse(response.body)
+
+    result match {
+      case JsArray(elements) if elements.isEmpty => List.empty[String]
+      case JsArray(elements) =>
+        elements.map(_ \ "typeName").map(_.as[String]).toList
+      case _ =>
+        throw new RuntimeException(
+          "Unexpected response from Schema Registry API"
+        )
+    }
+
+  }
+
   private def buildAuthToken(config: SchemaRegistryConfig): String = {
     val apiKey = config.apiKey
     val apiSecret = config.apiSecret
