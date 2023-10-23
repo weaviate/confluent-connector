@@ -5,6 +5,10 @@ setup:
 	
 	curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh && \
 		databricks configure
+	
+	cd ~ && \
+		curl -sL --http1.1 https://cnfl.io/cli | sh -s -- latest && \
+		echo 'export PATH="$$HOME/bin:$$PATH"' >> ~/.bashrc
 
 # Run unit tests
 test:
