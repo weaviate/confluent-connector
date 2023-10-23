@@ -93,7 +93,7 @@ class SchemaRegistryFlatSpec
   it should "throw an exception if no schema record is found with the given name" in {
     val nonExistingSchemaFQN = schemaFQN + "non-existing"
 
-    assertThrows[NoSuchElementException] {
+    assertThrows[RuntimeException] {
       SchemaRegistry.getSchemaTopLevelTags(nonExistingSchemaFQN, config)
     }
   }

@@ -131,6 +131,41 @@ object SchemaRegistry {
     Json.parse(response.body)
   }
 
+  /** Wraps the Confluent Schema Registry API endpoint for retrieving a schema
+    * record by a fully qualified name.
+    *
+    * @param schemaFQN
+    *   the fully qualified name of the schema record to retrieve
+    * @param config
+    *   the Schema Registry configuration
+    * @return
+    *   the schema record as a JsValue
+    */
+  def getSchemaRecordByFullyQualifiedName(
+      schemaFQN: String,
+      config: SchemaRegistryConfig
+  ): JsValue = {
+    val schemaRegistryUrl = config.url
+    val authToken = buildAuthToken(config)
+
+    val client = HttpClient.newHttpClient()
+
+    val request = HttpRequest
+      .newBuilder()
+      .uri(
+        URI.create(
+          s"$schemaRegistryUrl/catalog/v1/entity/type/sr_record/name/$schemaFQN"
+        )
+      )
+      .header("Authorization", s"Basic $authToken")
+      .GET()
+      .build()
+
+    val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+    Json.parse(response.body)
+  }
+
   /** Searches for a schema record by name and returns the fully qualified name
     * of that schema's latest version.
     *
@@ -172,20 +207,29 @@ object SchemaRegistry {
     *   The configuration for the Schema Registry.
     * @return
     *   A list of top-level tags for the schema.
-    * @throws NoSuchElementException
-    *   If no schema record is found with the given name.
+    * @throws RuntimeException
+    *   If no schema record is found with the given name. The exception message
+    *   will include the error code and message returned by the Schema Registry
+    *   API.
     */
   def getSchemaTopLevelTags(
       schemaFQN: String,
       config: SchemaRegistryConfig
-  ): List[String] = {
-    val schemaName = schemaFQN.split("\\.").last
-    val result = SchemaRegistry.searchSchemaRecordByName(schemaName, config)
-    val entities = result("entities").as[JsArray].value
-    val matchingSchema = entities
-      .filter(e => e("attributes")("qualifiedName").as[String] == schemaFQN)
-      .head
-    matchingSchema("classificationNames").as[JsArray].as[List[String]]
+  ): Iterable[String] = {
+    val result =
+      SchemaRegistry.getSchemaRecordByFullyQualifiedName(schemaFQN, config)
+    if ((result \ "error_code").toOption.isDefined) {
+      val errorCode = (result \ "error_code").as[Int]
+      val errorMessage = (result \ "message").as[String]
+      throw new RuntimeException(
+        s"Error retrieving schema record (error code $errorCode): $errorMessage"
+      )
+    }
+    val classificationNames = (result \ "entity" \ "classifications")
+      .as[JsArray]
+      .value
+      .map(_("typeName").as[String])
+    classificationNames
   }
 
   private def buildAuthToken(config: SchemaRegistryConfig): String = {
