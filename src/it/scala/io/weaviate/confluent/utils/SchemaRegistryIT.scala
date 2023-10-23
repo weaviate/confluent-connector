@@ -98,4 +98,14 @@ class SchemaRegistryFlatSpec
     }
   }
 
+  "getSchemaFields" should "return a list of field names for the schema" in {
+    val fields = SchemaRegistry.getSchemaFields(schemaFQN, config)
+    fields.toList.sorted shouldEqual List(
+      "field1",
+      "field2",
+      "field3",
+      "field4"
+    )
+  }
+
 }

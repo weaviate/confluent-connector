@@ -237,6 +237,33 @@ object SchemaRegistry {
     classificationNames
   }
 
+  /** Retrieves the field names for a schema from the Confluent Schema Registry.
+    *
+    * @param schemaFQN
+    *   The fully-qualified name of the schema to retrieve.
+    * @param config
+    *   The configuration for the Schema Registry.
+    * @return
+    *   A list of field names for the schema.
+    * @throws RuntimeException
+    *   If an error occurs while retrieving the schema record. The exception
+    *   message will include the error code and message returned by the Schema
+    *   Registry API.
+    */
+  def getSchemaFields(
+      schemaFQN: String,
+      config: SchemaRegistryConfig
+  ): Iterable[String] = {
+    val result =
+      SchemaRegistry.getSchemaRecordByFullyQualifiedName(schemaFQN, config)
+
+    val fields = (result \ "referredEntities" \\ "attributes").map(attr =>
+      (attr \ "name").as[String]
+    )
+
+    fields
+  }
+
   private def buildAuthToken(config: SchemaRegistryConfig): String = {
     val apiKey = config.apiKey
     val apiSecret = config.apiSecret
