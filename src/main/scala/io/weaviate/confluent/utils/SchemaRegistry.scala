@@ -233,7 +233,7 @@ object SchemaRegistry {
       .as[JsArray]
       .value
       .map(_("typeName").as[String])
-    
+
     classificationNames
   }
 
