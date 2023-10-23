@@ -140,6 +140,10 @@ object SchemaRegistry {
     *   the Schema Registry configuration
     * @return
     *   the schema record as a JsValue
+    * @throws RuntimeException
+    *   If an error occurs while retrieving the schema record. The exception
+    *   message will include the error code and message returned by the Schema
+    *   Registry API.
     */
   def getSchemaRecordByFullyQualifiedName(
       schemaFQN: String,
@@ -163,7 +167,17 @@ object SchemaRegistry {
 
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-    Json.parse(response.body)
+    val result = Json.parse(response.body)
+
+    if ((result \ "error_code").toOption.isDefined) {
+      val errorCode = (result \ "error_code").as[Int]
+      val errorMessage = (result \ "message").as[String]
+      throw new RuntimeException(
+        s"Error retrieving schema record (error code $errorCode): $errorMessage"
+      )
+    }
+
+    result
   }
 
   /** Searches for a schema record by name and returns the fully qualified name
@@ -207,10 +221,6 @@ object SchemaRegistry {
     *   The configuration for the Schema Registry.
     * @return
     *   A list of top-level tags for the schema.
-    * @throws RuntimeException
-    *   If no schema record is found with the given name. The exception message
-    *   will include the error code and message returned by the Schema Registry
-    *   API.
     */
   def getSchemaTopLevelTags(
       schemaFQN: String,
@@ -218,17 +228,12 @@ object SchemaRegistry {
   ): Iterable[String] = {
     val result =
       SchemaRegistry.getSchemaRecordByFullyQualifiedName(schemaFQN, config)
-    if ((result \ "error_code").toOption.isDefined) {
-      val errorCode = (result \ "error_code").as[Int]
-      val errorMessage = (result \ "message").as[String]
-      throw new RuntimeException(
-        s"Error retrieving schema record (error code $errorCode): $errorMessage"
-      )
-    }
+
     val classificationNames = (result \ "entity" \ "classifications")
       .as[JsArray]
       .value
       .map(_("typeName").as[String])
+    
     classificationNames
   }
 
